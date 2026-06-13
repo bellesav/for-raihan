@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, Sayang 🤍</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1A0A0A;
+      --navy2:  #2A1010;
+      --navy3:  #3D1515;
+      --silver: #E0C8C8;
+      --muted:  #A87A7A;
+      --accent: #C4706F;
+      --white:  #F8EEEE;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── MUSIC BAR ── */
+    #music-bar {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.2rem;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(20,32,51,0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(168,192,214,0.2);
+      border-radius: 2rem;
+      padding: 0.5rem 1rem 0.5rem 0.7rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #music-bar:hover { background: rgba(28,46,71,0.95); }
+    .music-icon { font-size: 1rem; }
+    .music-label { font-size: 0.7rem; letter-spacing: 0.08em; color: var(--muted); }
+    .music-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.4s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .music-dot.paused { animation: none; opacity: 0.3; }
+
+    /* ── STARS ── */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle linear infinite;
+    }
+    @keyframes twinkle {
+      0%,100%{ opacity:0.1; transform:scale(1); }
+      50%{ opacity:0.7; transform:scale(1.4); }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 30% 70%, rgba(168,192,214,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 70% 20%, rgba(168,192,214,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 1.1s ease 0.5s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-sub {
+      margin-top: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.8s forwards;
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.4s forwards;
+    }
+    .scroll-hint span { font-size: 0.63rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: grow 1.5s ease infinite alternate;
+    }
+    @keyframes grow { from{transform:scaleY(0.6);opacity:0.4} to{transform:scaleY(1);opacity:1} }
+
+    /* ── LETTER ── */
+    .letter-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+    .letter-header {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--white);
+      margin-bottom: 2.5rem;
+      border-left: 2px solid var(--navy3);
+      padding-left: 1.25rem;
+    }
+    .letter-body p {
+      font-size: clamp(0.92rem, 2.2vw, 1.05rem);
+      line-height: 1.95;
+      color: var(--silver);
+      margin-bottom: 1.6rem;
+    }
+    .letter-body p:last-child { margin-bottom: 0; }
+    .highlight {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05em;
+      color: var(--white);
+    }
+
+    /* ── SLIDESHOW ── */
+    .slideshow-section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2rem 2rem 5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .slideshow {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--navy2);
+      border: 1px solid rgba(168,192,214,0.12);
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slide.active { opacity: 1; }
+    .slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .slide-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--muted);
+    }
+    .slide-placeholder .icon { font-size: 2.5rem; opacity: 0.4; }
+    .slide-placeholder p { font-size: 0.78rem; letter-spacing: 0.06em; text-align:center; padding:0 1rem; }
+    .slide-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+    .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--navy3);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.4); }
+    .slide-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 0.9rem;
+    }
+    .slide-btn {
+      background: rgba(168,192,214,0.08);
+      border: 1px solid rgba(168,192,214,0.15);
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .slide-btn:hover { background: rgba(168,192,214,0.15); color: var(--white); }
+
+    /* ── VIDEO ── */
+    .video-section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .video-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--navy2);
+      border: 1px solid rgba(168,192,214,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .video-wrap video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .video-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--muted);
+    }
+    .video-placeholder .icon { font-size: 2.5rem; opacity:0.4; }
+    .video-placeholder p { font-size: 0.78rem; letter-spacing:0.06em; text-align:center; padding:0 1rem; }
+
+    /* ── CLOSING ── */
+    .closing {
+      text-align: center;
+      padding: 4rem 2rem 6rem;
+      border-top: 1px solid var(--navy3);
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .closing-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+    .closing-body {
+      font-size: 0.95rem;
+      color: var(--silver);
+      line-height: 1.9;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .closing-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .heart {
+      display: inline-block;
+      margin-top: 2.5rem;
+      font-size: 1.3rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+
+    /* ── QR CODE ── */
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 2rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+    .qr-wrap {
+      background: #fff;
+      border-radius: 16px;
+      padding: 1rem;
+      margin: 1rem 0 0.75rem;
+      box-shadow: 0 0 30px rgba(168,192,214,0.15);
+    }
+    .qr-hint {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── UTILS ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .fade-in { opacity:0; transform:translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .fade-in.visible { opacity:1; transform:translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .fade-in { opacity:1; transform:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STARS -->
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <!-- MUSIC BAR -->
+  <div id="music-bar" onclick="toggleMusic()" title="Play / Pause music">
+    <span class="music-icon">🎵</span>
+    <span class="music-label">Shape of My Heart</span>
+    <div class="music-dot" id="music-dot"></div>
+  </div>
+  <audio id="bg-music" loop>
+    <source src="musik.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="eyebrow">For you, always</p>
+    <h1 class="hero-title">Happy<br /><em>Birthday</em></h1>
+    <p class="hero-sub">my favorite person 🤍</p>
+    <div class="scroll-hint">
+      <span>read</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- LETTER -->
+  <main>
+    <div class="letter-wrap">
+      <h2 class="letter-header fade-in">Happy Birthday to my favorite person. 🤍</h2>
+      <div class="letter-body">
+
+        <p class="fade-in">
+          I've replayed the same songs hundreds of times, ordered the same food more times than I should admit,
+          and gotten attached to a lot of random things. But somehow,
+          <span class="highlight">you're still my favorite.</span>
+          More than every song on my playlist, more than my comfort food, and yes — even more than that nasi goreng
+          from Kafe Maju Makmur that I keep ordering like it's part of my personality.
+        </p>
+
+        <p class="fade-in">
+          One thing you'll probably never understand is how proud I am of you. Not only when you achieve something big,
+          but also in the little things. When you keep trying. When you choose to do what's right. When you stay kind
+          even when nobody's watching. When you keep moving forward on days that don't go your way.
+          <span class="highlight">I notice those things. Maybe more than you realize.</span>
+        </p>
+
+        <p class="fade-in">
+          I don't think I've ever told you this enough, but I genuinely love watching you become the person you're
+          meant to be. Every version of you has been my favorite so far, and I know the future versions will be too.
+        </p>
+
+        <p class="fade-in">
+          The funny thing is, some of my favorite memories with you aren't even the special ones. Not birthdays.
+          Not anniversaries. Just random conversations, random moments, random days that somehow became important
+          because they happened with you. Turns out,
+          <span class="highlight">when it's you, even ordinary things feel worth remembering.</span>
+        </p>
+
+        <p class="fade-in">
+          And can we talk about how terrible you are at hiding your emotions? Especially when you're upset.
+          You can say you're fine all you want, but your face tells on you every single time.
+          It's honestly one of my favorite things about you. Cute? A little. Funny? Definitely.
+        </p>
+
+        <p class="fade-in">
+          What I'll always remember most about you is how hard you try for the people you love. Especially for me.
+          There are so many moments where you've gone out of your way just to make me happy, make me feel better,
+          or make things easier for me. I don't know if you realize how much those things mean,
+          but <span class="highlight">I carry every single one of them with me.</span>
+        </p>
+
+        <p class="fade-in">
+          You're my safe place. My home. The first person I want to tell things to when something good happens.
+          The first person I look for when life feels heavy. And somehow, even after all this time,
+          you're still the person I want to share everything with.
+        </p>
+
+        <p class="fade-in">
+          So if anyone ever asks me what my favorite thing is, I could talk about music, food, movies, or a hundred
+          other things. But the truth is, <span class="highlight">it's you. It's always been you.</span>
+        </p>
+
+      </div>
+    </div>
+
+    <!-- SLIDESHOW -->
+    <div class="slideshow-section fade-in">
+      <p class="section-label">us, in moments 🤍</p>
+      <div class="slideshow" id="slideshow">
+        <div class="slide active"><img src="foto1.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto2.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto3.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto4.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto5.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto6.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto7.jpg" alt="us" /></div>
+        <div class="slide"><img src="foto8.jpg" alt="us" /></div>
+      </div>
+      <div class="slide-dots" id="dots"></div>
+      <div class="slide-nav">
+        <button class="slide-btn" onclick="prevSlide()">← prev</button>
+        <button class="slide-btn" onclick="nextSlide()">next →</button>
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="video-section fade-in">
+      <p class="section-label">a moment, just for you 🎞</p>
+      <div class="video-wrap">
+        <video controls style="width:100%;height:100%;object-fit:cover;">
+          <source src="video.mp4" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+
+    <!-- QR CODE -->
+    <div class="qr-section fade-in">
+      <p class="section-label">open this on your phone 🤍</p>
+      <div class="qr-wrap">
+        <div id="qrcode"></div>
+      </div>
+      <p class="qr-hint">scan to open this page</p>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="closing fade-in">
+      <p class="closing-line">Happy Birthday, sayang.</p>
+      <p class="closing-body">
+        Thank you for making life feel lighter, happier, softer, and a whole lot more beautiful.<br />
+        Thank you for being someone I'm endlessly proud of.<br />
+        Thank you for being my favorite person, my favorite place,<br />
+        and one of the best things that has ever happened to me.
+      </p>
+      <p class="closing-sub">I love you. Always.</p>
+      <div class="heart">🤍</div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // ── QR CODE ──
+    new QRCode(document.getElementById("qrcode"), {
+      text: "https://untuk-raihan.vercel.app",
+      width: 180,
+      height: 180,
+      colorDark: "#0D1B2A",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  </script>
+  <script>
+    // ── STARS ──
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = 1 + Math.random() * 2;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}%;
+        top:${Math.random()*100}%;
+        animation-duration:${2+Math.random()*4}s;
+        animation-delay:${Math.random()*4}s;
+      `;
+      starsEl.appendChild(s);
+    }
+
+    // ── MUSIC ──
+    const audio = document.getElementById('bg-music');
+    const dot   = document.getElementById('music-dot');
+    let playing = false;
+
+    function toggleMusic() {
+      if (playing) {
+        audio.pause();
+        dot.classList.add('paused');
+      } else {
+        audio.play().catch(() => {});
+        dot.classList.remove('paused');
+      }
+      playing = !playing;
+    }
+
+    // autoplay on first interaction
+    document.addEventListener('click', () => {
+      if (!playing) { audio.play().catch(() => {}); playing = true; dot.classList.remove('paused'); }
+    }, { once: true });
+
+    // ── SLIDESHOW ──
+    const slides = document.querySelectorAll('.slide');
+    const dotsEl = document.getElementById('dots');
+    let current = 0;
+    let timer;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.onclick = () => goTo(i);
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dotsEl.children[current].classList.remove('active');
+      current = (n + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dotsEl.children[current].classList.add('active');
+      resetTimer();
+    }
+
+    function nextSlide() { goTo(current + 1); }
+    function prevSlide() { goTo(current - 1); }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(current + 1), 4000);
+    }
+    resetTimer();
+
+    // ── SCROLL FADE ──
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
